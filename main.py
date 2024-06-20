@@ -7,11 +7,13 @@ import chromedriver_autoinstaller
 from bs4 import BeautifulSoup
 import time
 
+linha = input("Digite a linha que deseja consultar (Apenas número): ")
+
 chrome_options = Options()
 chrome_options.add_argument("--headless=new")
 driver = webdriver.Chrome(service=Service(chromedriver_autoinstaller.install()), options=chrome_options)
 
-url = "https://www.diretodostrens.com.br/?codigo=2"
+url = f"https://www.diretodostrens.com.br/?codigo={linha.replace(" ", "")}"
 headers = {
     "User-Agent": "situacaoMetro/1.0 (+https://github.com/rafaelGarcia1oACienciaDaComputacao/situacaoMetro)"
 }
@@ -33,5 +35,7 @@ for tr in tbody.find_all('tr'):
     if len(tds) >= 3:
         td1_text = tds[0].find('a')
         td2_text = tds[1].get_text(strip=True)
+        if "Operação" not in td2_text:
+            continue
         td3_text = tds[2].get_text(strip=True)
         print(f'TD1: {td1_text.get_text(strip=True)}, TD2: {td2_text}, TD3: {td3_text}')
